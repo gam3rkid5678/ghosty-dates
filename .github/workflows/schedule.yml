@@ -1,0 +1,27 @@
+name: Ghosty Precision Single-Interval Scheduler
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 🎯 PERFECT OFF-TRAFFIC interval setup
+    - cron: '12,42 * * * *'
+
+jobs:
+  run_precision_bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Execute Precision Loop
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python bot.py
