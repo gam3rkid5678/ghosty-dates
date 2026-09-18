@@ -1,10 +1,9 @@
-name: Ghosty Precision Single-Interval Scheduler
+name: Ghosty High-Priority On-Demand Scheduler
 
 on:
-  workflow_dispatch:
-  schedule:
-    # 🎯 PERFECT OFF-TRAFFIC interval setup
-    - cron: '12,42 * * * *'
+  # 🎯 BYPASS QUEUE: Listens for a direct external API ping to force an instant, high-priority server boot!
+  repository_dispatch:
+    types: [trigger_precision_bot]
 
 jobs:
   run_precision_bot:
