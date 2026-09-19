@@ -12,7 +12,8 @@ with open("times.json", "r") as f:
 sent_today = set()
 
 # Color options list (Magenta, Cyan, and Blurple decimal codes)
-NOTIF_COLORS =
+# Color options list (Magenta, Cyan, and Blurple decimal codes)
+NOTIF_COLORS = [15418879, 53247, 5793266]
 
 print("Ghosty Precision Engine Active. Isolated 30-Minute Shift Mode Engaged...")
 
