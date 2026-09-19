@@ -3,7 +3,8 @@ name: Ghosty Precision Single-Interval Scheduler
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0,30 * * * *'
+    # 🎯 TRAFFIC BYPASS: Fires early at :25 and :55 to clear the queue instantly before the hour spike hits!
+    - cron: '25,55 * * * *'
 
 jobs:
   run_precision_bot:
