@@ -1,0 +1,36 @@
+name: Ghosty Precision Single-Interval Scheduler
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 🎯 HIGH-PRIORITY NATIVE TRACK: Automatically fires every 15 minutes on the dot
+    - cron: '0,15,30,45 * * * *'
+
+jobs:
+  run_precision_bot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Execute Precision Loop
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python bot.py
+
+      # 🛡️ KEEP-ALIVE heart: Keeps your free new-repository cron priority at elite tier permanently
+      - name: Keep Github Actions Alive Natively
+        uses: gautamkrishnar/keepalive-workflow@v2
+        with:
+          use_api: true
