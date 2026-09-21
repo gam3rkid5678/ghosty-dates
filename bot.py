@@ -30,15 +30,19 @@ def save_sent_history(sent_set):
                 "slots": list(sent_set)
             }, f)
         
-        # 🎯 RADICAL FIX: Automatically commit and push history back to GitHub instantly!
+        # 🛡️ THE REBASE PROTECTION SHIELD: Forces Git to fetch, rebase, and clear merge rejections cleanly!
         subprocess.run(["git", "config", "--global", "user.name", "Ghosty Bot"], check=True)
         subprocess.run(["git", "--global", "user.email", "bot@ghosty.live"], check=True)
+        subprocess.run(["git", "config", "pull.rebase", "true"], check=True) # Forces clean chronological stitching
+        
         subprocess.run(["git", "add", HISTORY_FILE], check=True)
         
         commit_res = subprocess.run(["git", "commit", "-m", "chore: update drop history [skip ci]"], capture_output=True, text=True)
         if "nothing to commit" not in commit_res.stdout:
-            subprocess.run(["git", "push"], check=True)
-            print("History successfully pushed to GitHub repository.")
+            # 🔄 RESYNC: Pulls the latest cloud commits right before pushing to guarantee zero rejections
+            subprocess.run(["git", "pull", "origin", "main"], check=True)
+            subprocess.run(["git", "push", "origin", "main"], check=True)
+            print("History successfully synchronized with branch.")
             
     except Exception as e:
         print(f"History syncing exception: {e}")
