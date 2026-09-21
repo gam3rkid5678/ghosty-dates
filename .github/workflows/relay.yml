@@ -1,7 +1,6 @@
 name: Ghosty Native Autopilot Relay Chain
 
 on:
-  # ⛓️ RELAY TRIGGER: Automatically wakes up a fresh server the instant your previous shift finishes running!
   workflow_run:
     workflows: ["Ghosty Precision Single-Interval Scheduler"]
     types:
@@ -14,6 +13,8 @@ jobs:
       - name: Trigger Next Automated Loop Row
         uses: actions/github-script@v7
         with:
+          # 🔑 BYPASS PROTOCOL: Uses your BOT_PAT secret to securely bypass GitHub's loop restrictions!
+          github-token: ${{ secrets.BOT_PAT }}
           script: |
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
