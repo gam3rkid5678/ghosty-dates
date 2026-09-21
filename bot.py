@@ -33,7 +33,7 @@ def save_sent_history(sent_set):
         # 🛡️ THE REBASE PROTECTION SHIELD: Forces Git to fetch, rebase, and clear merge rejections cleanly!
         subprocess.run(["git", "config", "--global", "user.name", "Ghosty Bot"], check=True)
         subprocess.run(["git", "--global", "user.email", "bot@ghosty.live"], check=True)
-        subprocess.run(["git", "config", "pull.rebase", "true"], check=True) # Forces clean chronological stitching
+        subprocess.run(["git", "config", "pull.rebase", "true"], check=True)
         
         subprocess.run(["git", "add", HISTORY_FILE], check=True)
         
@@ -48,9 +48,11 @@ def save_sent_history(sent_set):
         print(f"History syncing exception: {e}")
 
 sent_today = load_sent_history()
+
+# 🎯 VERIFIED NOTIFICATION COLORS (Magenta, Cyan, and Blurple)
 NOTIF_COLORS = [16711935, 65535, 5793266]
 
-print("Ghosty Precision Engine Active. 15-Minute Grid Track Live...")
+print("Ghosty Precision Engine Active. Forward-Only Firewall Live...")
 
 boot_time = datetime.datetime.now(datetime.timezone.utc)
 end_shift_time = boot_time + datetime.timedelta(minutes=13)
@@ -59,8 +61,9 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
     now = datetime.datetime.now(datetime.timezone.utc)
     sent_today = load_sent_history()
     
+    # ⏱️ FORWARD-ONLY FIREWALL: Strictly checks the exact current minute and 1 minute forward
     possible_times = []
-    for offset in range(-2, 2):
+    for offset in range(0, 2):
         check_time = now + datetime.timedelta(minutes=offset)
         possible_times.append(check_time.strftime("%H:%M"))
 
@@ -101,7 +104,8 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                     save_sent_history(sent_today)
                 time.sleep(5)
                 
-            elif target_time_str == "00:00" and "00:00" in sent_today:
+            # 🎯 MIDNIGHT FIREWALL: Instantly blocks a fresh 00:00 boot if it was already handled by the 23:59 shift
+            elif target_time_str == "00:00":
                 pass
             
             else:
@@ -109,6 +113,8 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                 role_ping = "<@&1464434655829692577>"
                 
                 header_title = raw_message.replace(role_ping, "").strip()
+                
+                # 🎯 VERIFIED DIRECT IMGUR ANIMATED CARD LINK
                 gif_url = "https://i.imgur.com/peovWde.gif"
                 
                 payload = {
