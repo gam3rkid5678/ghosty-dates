@@ -1,0 +1,122 @@
+import os
+import json
+import datetime
+import time
+import random
+import requests
+
+with open("times.json", "r") as f:
+    time_slots = json.load(f)
+
+HISTORY_FILE = "sent_history.json"
+
+def load_sent_history():
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r") as f:
+                data = json.load(f)
+                if data.get("date") == datetime.date.today().isoformat():
+                    return set(data.get("slots", []))
+        except Exception:
+            pass
+    return set()
+
+def save_sent_history(sent_set):
+    try:
+        with open(HISTORY_FILE, "w") as f:
+            json.dump({
+                "date": datetime.date.today().isoformat(),
+                "slots": list(sent_set)
+            }, f)
+    except Exception as e:
+        print(f"History logging error: {e}")
+
+sent_today = load_sent_history()
+NOTIF_COLORS = [15548997, 1752220, 5793266]
+
+print("Ghosty Precision Engine Active. 15-Minute Grid Track Live...")
+
+boot_time = datetime.datetime.now(datetime.timezone.utc)
+# 🎯 SHIFT LOCK: Stays awake for 13 minutes to exit cleanly before the next 15-minute cron triggers
+end_shift_time = boot_time + datetime.timedelta(minutes=13)
+
+while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
+    now = datetime.datetime.now(datetime.timezone.utc)
+    sent_today = load_sent_history()
+    
+    # ⏱️ INTERVAL NET: Looks back 2 minutes to block past spam while catching sudden startup latency
+    possible_times = []
+    for offset in range(-2, 2):
+        check_time = now + datetime.timedelta(minutes=offset)
+        possible_times.append(check_time.strftime("%H:%M"))
+
+    target_time_str = None
+    for t_str in possible_times:
+        if t_str in time_slots and t_str not in sent_today:
+            target_time_str = t_str
+            break
+
+    if target_time_str:
+        time_now_str = now.strftime("%H:%M")
+        if target_time_str > time_now_str:
+            while datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M") < target_time_str:
+                time.sleep(1)
+            now = datetime.datetime.now(datetime.timezone.utc)
+
+        raw_message = time_slots[target_time_str]
+        webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
+        
+        if webhook_url:
+            if target_time_str == "23:59":
+                payload_magic = {
+                    "content": raw_message,
+                    "allowed_mentions": {"parse": ["roles", "users", "everyone"]}
+                }
+                requests.post(webhook_url, json=payload_magic)
+                sent_today.add("23:59")
+                save_sent_history(sent_today)
+                time.sleep(60)
+                
+                if "00:00" in time_slots and "00:00" not in sent_today:
+                    payload_daily = {
+                        "content": time_slots["00:00"],
+                        "allowed_mentions": {"parse": ["roles", "users", "everyone"]}
+                    }
+                    requests.post(webhook_url, json=payload_daily)
+                    sent_today.add("00:00")
+                    save_sent_history(sent_today)
+                time.sleep(5)
+                
+            elif target_time_str == "00:00" and "00:00" in sent_today:
+                pass
+            
+            else:
+                chosen_color = random.choice(NOTIF_COLORS)
+                role_ping = "<@&1464434655829692577>"
+                
+                header_title = raw_message.replace(role_ping, "").strip()
+                gif_url = "https://i.imgur.com/peovWde.gif"
+                
+                payload = {
+                    "content": role_ping,
+                    "embeds": [
+                        {
+                            "title": header_title,
+                            "color": chosen_color,
+                            "image": {
+                                "url": gif_url
+                            }
+                        }
+                    ],
+                    "allowed_mentions": {"parse": ["roles", "users", "everyone"]}
+                }
+                requests.post(webhook_url, json=payload)
+                sent_today.add(target_time_str)
+                save_sent_history(sent_today)
+                time.sleep(65)
+        else:
+            break
+            
+    time.sleep(2)
+
+print("Shift tracking cycle complete.")
