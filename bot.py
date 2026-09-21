@@ -4,6 +4,7 @@ import datetime
 import time
 import random
 import requests
+import subprocess
 
 with open("times.json", "r") as f:
     time_slots = json.load(f)
@@ -28,23 +29,32 @@ def save_sent_history(sent_set):
                 "date": datetime.date.today().isoformat(),
                 "slots": list(sent_set)
             }, f)
+        
+        # 🎯 RADICAL FIX: Automatically commit and push history back to GitHub instantly!
+        subprocess.run(["git", "config", "--global", "user.name", "Ghosty Bot"], check=True)
+        subprocess.run(["git", "--global", "user.email", "bot@ghosty.live"], check=True)
+        subprocess.run(["git", "add", HISTORY_FILE], check=True)
+        
+        commit_res = subprocess.run(["git", "commit", "-m", "chore: update drop history [skip ci]"], capture_output=True, text=True)
+        if "nothing to commit" not in commit_res.stdout:
+            subprocess.run(["git", "push"], check=True)
+            print("History successfully pushed to GitHub repository.")
+            
     except Exception as e:
-        print(f"History logging error: {e}")
+        print(f"History syncing exception: {e}")
 
 sent_today = load_sent_history()
-NOTIF_COLORS = [15548997, 1752220, 5793266]
+NOTIF_COLORS = 
 
 print("Ghosty Precision Engine Active. 15-Minute Grid Track Live...")
 
 boot_time = datetime.datetime.now(datetime.timezone.utc)
-# 🎯 SHIFT LOCK: Stays awake for 13 minutes to exit cleanly before the next 15-minute cron triggers
 end_shift_time = boot_time + datetime.timedelta(minutes=13)
 
 while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
     now = datetime.datetime.now(datetime.timezone.utc)
     sent_today = load_sent_history()
     
-    # ⏱️ INTERVAL NET: Looks back 2 minutes to block past spam while catching sudden startup latency
     possible_times = []
     for offset in range(-2, 2):
         check_time = now + datetime.timedelta(minutes=offset)
