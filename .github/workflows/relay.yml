@@ -1,0 +1,23 @@
+name: Ghosty Native Autopilot Relay Chain
+
+on:
+  # ⛓️ RELAY TRIGGER: Automatically wakes up a fresh server the instant your previous shift finishes running!
+  workflow_run:
+    workflows: ["Ghosty Precision Single-Interval Scheduler"]
+    types:
+      - completed
+
+jobs:
+  trigger_next_shift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Next Automated Loop Row
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'schedule.yml',
+              ref: 'main'
+            });
