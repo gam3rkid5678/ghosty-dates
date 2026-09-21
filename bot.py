@@ -44,7 +44,7 @@ def save_sent_history(sent_set):
         print(f"History syncing exception: {e}")
 
 sent_today = load_sent_history()
-NOTIF_COLORS = 
+NOTIF_COLORS = [16711935, 65535, 5793266]
 
 print("Ghosty Precision Engine Active. 15-Minute Grid Track Live...")
 
