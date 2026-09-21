@@ -3,7 +3,7 @@ name: Ghosty Precision Single-Interval Scheduler
 on:
   workflow_dispatch:
   schedule:
-    # 🎯 HIGH-PRIORITY NATIVE TRACK: Automatically fires every 15 minutes on the dot
+    # 🎯 HIGH-FREQUENCY AUTO TRACK: Automatically sweeps every 15 minutes continuous
     - cron: '0,15,30,45 * * * *'
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python bot.py
 
-      # 🛡️ KEEP-ALIVE heart: Keeps your free new-repository cron priority at elite tier permanently
+      # 🛡️ IMMORTALITY SHIELD: Bumps your repository database history automatically to bypass new-account delay pools permanently!
       - name: Keep Github Actions Alive Natively
         uses: gautamkrishnar/keepalive-workflow@v2
         with:
