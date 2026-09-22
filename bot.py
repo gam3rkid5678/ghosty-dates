@@ -6,27 +6,6 @@ import random
 import requests
 import subprocess
 
-# 🔒 THE INSTANT EXIT LOCK: Checks if another active runner is already handling the timeline
-def check_active_runners():
-    try:
-        repo = os.environ.get("GITHUB_REPOSITORY")
-        token = os.environ.get("GITHUB_TOKEN")
-        if repo and token:
-            url = f"https://github.com{repo}/actions/runs?status=in_progress"
-            headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github+json"}
-            res = requests.get(url, headers=headers).json()
-            runs = [r for r in res.get("workflow_runs", []) if r.get("name") == "Ghosty Precision Single-Interval Scheduler"]
-            # If there is more than 1 in_progress run (this one included), exit instantly!
-            if len(runs) > 1:
-                print("🚨 Secondary runner detected! Exiting to prevent overlap loops.")
-                return True
-    except Exception as e:
-        print(f"Runner check error: {e}")
-    return False
-
-if check_active_runners():
-    os._exit(0)
-
 with open("times.json", "r") as f:
     time_slots = json.load(f)
 
@@ -68,18 +47,20 @@ def save_sent_history(sent_set):
 
 sent_today = load_sent_history()
 
-# 🎯 FIXED: Color options list (Magenta, Cyan, and Blurple decimal codes)
+# 🎯 VERIFIED NOTIFICATION COLORS (Magenta, Cyan, and Blurple)
 NOTIF_COLORS = [16711935, 65535, 5793266] 
 
-print("Ghosty Precision Engine Active. Forward-Only Firewall Live...")
+print("Ghosty 1-Hour Shift Engine Active. Forward-Only Tracking Live...")
 
 boot_time = datetime.datetime.now(datetime.timezone.utc)
-end_shift_time = boot_time + datetime.timedelta(minutes=13)
+# 🎯 55-MINUTE CEILING: Safely tracks the timeline continuously on a single thread [22 Sep 2026]
+end_shift_time = boot_time + datetime.timedelta(minutes=55)
 
 while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
     now = datetime.datetime.now(datetime.timezone.utc)
     sent_today = load_sent_history()
     
+    # ⏱️ FORWARD-ONLY FIREWALL: Strictly checks the current minute and 1 minute forward
     possible_times = []
     for offset in range(0, 2):
         check_time = now + datetime.timedelta(minutes=offset)
@@ -131,7 +112,7 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                 
                 header_title = raw_message.replace(role_ping, "").strip()
                 
-                # 🎯 FIXED: Corrected Imgur link path
+                # 🎯 VERIFIED DIRECT IMGUR ANIMATED CARD LINK
                 gif_url = "https://i.imgur.com/peovWde.gif"
                 
                 payload = {
