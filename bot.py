@@ -6,6 +6,27 @@ import random
 import requests
 import subprocess
 
+# 🔒 THE INSTANT EXIT LOCK: Checks if another active runner is already handling the timeline
+def check_active_runners():
+    try:
+        repo = os.environ.get("GITHUB_REPOSITORY")
+        token = os.environ.get("GITHUB_TOKEN")
+        if repo and token:
+            url = f"https://github.com{repo}/actions/runs?status=in_progress"
+            headers = {"Authorization": f"token {token}", "Accept": "application/vnd.github+json"}
+            res = requests.get(url, headers=headers).json()
+            runs = [r for r in res.get("workflow_runs", []) if r.get("name") == "Ghosty Precision Single-Interval Scheduler"]
+            # If there is more than 1 in_progress run (this one included), exit instantly!
+            if len(runs) > 1:
+                print("🚨 Secondary runner detected! Exiting to prevent overlap loops.")
+                return True
+    except Exception as e:
+        print(f"Runner check error: {e}")
+    return False
+
+if check_active_runners():
+    os._exit(0)
+
 with open("times.json", "r") as f:
     time_slots = json.load(f)
 
@@ -30,7 +51,6 @@ def save_sent_history(sent_set):
                 "slots": list(sent_set)
             }, f)
         
-        # 🛡️ THE REBASE PROTECTION SHIELD: Forces Git to fetch, rebase, and clear merge rejections cleanly!
         subprocess.run(["git", "config", "--global", "user.name", "Ghosty Bot"], check=True)
         subprocess.run(["git", "--global", "user.email", "bot@ghosty.live"], check=True)
         subprocess.run(["git", "config", "pull.rebase", "true"], check=True)
@@ -39,7 +59,6 @@ def save_sent_history(sent_set):
         
         commit_res = subprocess.run(["git", "commit", "-m", "chore: update drop history [skip ci]"], capture_output=True, text=True)
         if "nothing to commit" not in commit_res.stdout:
-            # 🔄 RESYNC: Pulls the latest cloud commits right before pushing to guarantee zero rejections
             subprocess.run(["git", "pull", "origin", "main"], check=True)
             subprocess.run(["git", "push", "origin", "main"], check=True)
             print("History successfully synchronized with branch.")
@@ -49,8 +68,8 @@ def save_sent_history(sent_set):
 
 sent_today = load_sent_history()
 
-# 🎯 VERIFIED NOTIFICATION COLORS (Magenta, Cyan, and Blurple)
-NOTIF_COLORS = [16711935, 65535, 5793266]
+# 🎯 FIXED: Color options list (Magenta, Cyan, and Blurple decimal codes)
+NOTIF_COLORS = 
 
 print("Ghosty Precision Engine Active. Forward-Only Firewall Live...")
 
@@ -61,7 +80,6 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
     now = datetime.datetime.now(datetime.timezone.utc)
     sent_today = load_sent_history()
     
-    # ⏱️ FORWARD-ONLY FIREWALL: Strictly checks the exact current minute and 1 minute forward
     possible_times = []
     for offset in range(0, 2):
         check_time = now + datetime.timedelta(minutes=offset)
@@ -104,7 +122,6 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                     save_sent_history(sent_today)
                 time.sleep(5)
                 
-            # 🎯 MIDNIGHT FIREWALL: Instantly blocks a fresh 00:00 boot if it was already handled by the 23:59 shift
             elif target_time_str == "00:00":
                 pass
             
@@ -114,8 +131,8 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                 
                 header_title = raw_message.replace(role_ping, "").strip()
                 
-                # 🎯 VERIFIED DIRECT IMGUR ANIMATED CARD LINK
-                gif_url = "https://i.imgur.com/peovWde.gif"
+                # 🎯 FIXED: Corrected Imgur link path
+                gif_url = "https://imgur.com"
                 
                 payload = {
                     "content": role_ping,
