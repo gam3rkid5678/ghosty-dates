@@ -69,7 +69,7 @@ def save_sent_history(sent_set):
 sent_today = load_sent_history()
 
 # 🎯 FIXED: Color options list (Magenta, Cyan, and Blurple decimal codes)
-NOTIF_COLORS = 
+NOTIF_COLORS = [16711935, 65535, 5793266] 
 
 print("Ghosty Precision Engine Active. Forward-Only Firewall Live...")
 
@@ -132,7 +132,7 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                 header_title = raw_message.replace(role_ping, "").strip()
                 
                 # 🎯 FIXED: Corrected Imgur link path
-                gif_url = "https://imgur.com"
+                gif_url = "https://i.imgur.com/peovWde.gif"
                 
                 payload = {
                     "content": role_ping,
