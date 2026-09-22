@@ -10,10 +10,16 @@ jobs:
   trigger_next_shift:
     runs-on: ubuntu-latest
     steps:
+      # ⏳ STAGGERED GATE: Sleeps for a random amount of seconds to completely separate overlapping runs!
+      - name: Stagger Launch Window
+        run: |
+          DELAY=$((5 + RANDOM % 15))
+          echo "Staggering trigger by $DELAY seconds to permanently prevent duplicate race conditions..."
+          sleep $DELAY
+
       - name: Trigger Next Automated Loop Row
         uses: actions/github-script@v7
         with:
-          # 🔑 BYPASS PROTOCOL: Uses your BOT_PAT secret to securely bypass GitHub's loop restrictions!
           github-token: ${{ secrets.BOT_PAT }}
           script: |
             await github.rest.actions.createWorkflowDispatch({
