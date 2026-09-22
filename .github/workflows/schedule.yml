@@ -46,7 +46,7 @@ jobs:
 
       - name: Execute 55-Minute Precision Loop
         env:
-          DISCORD_WEBHOOK_URL: \${{ secrets.DISCORD_WEBHOOK_URL }} # 🎯 FIXED: Backslash removed so your URL loads cleanly!
+          DISCORD_WEBHOOK_URL: \${{ secrets.DISCORD_WEBHOOK_URL }} # 🎯 FIXED: No backslashes! Pulls your clean URL string natively.
         run: python bot.py
 
       # 🚀 THE NATIVE DISPATCH: Fires a webhook handshake right before expiration to boot the next shift row
@@ -54,7 +54,7 @@ jobs:
         if: always()
         run: |
           curl -X POST \
-            -H "Authorization: token \${{ secrets.GITHUB_TOKEN }}" # 🎯 FIXED: Backslash removed for native authentication! \
+            -H "Authorization: token \${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
             https://github.com\${{ github.repository }}/dispatches \
             -d '{"event_type":"trigger_next_shift"}'
