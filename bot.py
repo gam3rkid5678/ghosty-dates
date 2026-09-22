@@ -47,13 +47,13 @@ def save_sent_history(sent_set):
 
 sent_today = load_sent_history()
 
-# 🎯 VERIFIED NOTIFICATION COLORS (Magenta, Cyan, and Blurple)
-NOTIF_COLORS = [16711935, 65535, 5793266] 
+# 🎯 RESTORED: Your exact notification color options list
+NOTIF_COLORS = [16711935, 65535, 5793266]
 
 print("Ghosty 1-Hour Shift Engine Active. Forward-Only Tracking Live...")
 
 boot_time = datetime.datetime.now(datetime.timezone.utc)
-# 🎯 55-MINUTE CEILING: Safely tracks the timeline continuously on a single thread [22 Sep 2026]
+# 🎯 55-MINUTE SHIFT: Safely tracks the timeline continuously on a single thread and reboots safely
 end_shift_time = boot_time + datetime.timedelta(minutes=55)
 
 while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
@@ -112,7 +112,7 @@ while datetime.datetime.now(datetime.timezone.utc) < end_shift_time:
                 
                 header_title = raw_message.replace(role_ping, "").strip()
                 
-                # 🎯 VERIFIED DIRECT IMGUR ANIMATED CARD LINK
+                # 🎯 RESTORED: Direct animated GIF url path link
                 gif_url = "https://i.imgur.com/peovWde.gif"
                 
                 payload = {
