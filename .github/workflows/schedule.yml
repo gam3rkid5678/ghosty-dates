@@ -15,7 +15,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 🪓 THE AXE: Instantly looks up your active workflow panel and terminates the old runner before python boots!
       - name: Cancel Overlapping Active Runners
         uses: actions/github-script@v7
         with:
@@ -46,10 +45,9 @@ jobs:
 
       - name: Execute 55-Minute Precision Loop
         env:
-          DISCORD_WEBHOOK_URL: \${{ secrets.DISCORD_WEBHOOK_URL }} # 🎯 FIXED: No backslashes! Pulls your clean URL string natively.
+          DISCORD_WEBHOOK_URL: \${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python bot.py
 
-      # 🚀 THE NATIVE DISPATCH: Fires a webhook handshake right before expiration to boot the next shift row
       - name: Auto-Trigger Next Hour Shift
         if: always()
         run: |
