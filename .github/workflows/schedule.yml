@@ -3,6 +3,7 @@ name: Ghosty Precision Single-Interval Scheduler
 on:
   workflow_dispatch:
   schedule:
+    # 🎯 HIGH-FREQUENCY AUTO TRACK: Automatically sweeps every 15 minutes continuous
     - cron: '0,15,30,45 * * * *'
 
 jobs:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
+      actions: write  # 🔑 CRITICAL: Gives the container permission to view the repository actions API queue!
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -26,4 +27,5 @@ jobs:
       - name: Execute Precision Loop
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 🔑 MASTER PASS KEY: Allows the python lock script to scan for other active runners!
         run: python bot.py
