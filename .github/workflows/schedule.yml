@@ -46,7 +46,7 @@ jobs:
 
       - name: Execute 55-Minute Precision Loop
         env:
-          DISCORD_WEBHOOK_URL: \${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python bot.py
 
       # 🚀 THE NATIVE HANDOFF: Safely wakes up the next shift container ONLY if the current loop finishes successfully
